@@ -1,5 +1,7 @@
 package tree;
 
+import tree.iterators.InorderIterator;
+
 import java.util.Iterator;
 
 import static java.lang.Long.MAX_VALUE;
@@ -142,6 +144,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new InorderIterator(root);
     }
 }
