@@ -18,10 +18,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements Iterable<T> {
             return new Node<>(value);
         }
         if (root.data.compareTo(value) < 0) {
-            root.left = insert(root.left,value);
+            root.right = insert(root.right,value);
         }
         else if (root.data.compareTo(value) > 0) {
-            root.right = insert(root.right,value);
+            root.left = insert(root.left,value);
         }
         return root;
     }
@@ -33,30 +33,32 @@ public class BinarySearchTree<T extends Comparable<T>> implements Iterable<T> {
             return node;
         }
         if (root.data.compareTo(node.data) < 0) {
-            root.left = insert(root.left,node);
+            root.right = insert(root.right,node);
         }
         else if (root.data.compareTo(node.data) > 0) {
-            root.right = insert(root.right,node);
+            root.left = insert(root.left,node);
         }
         return root;
     }
 
     public boolean isValid() {
-        return isValid(root,null);
+        return isValid(root);
     }
 
-    private boolean isValid(Node<T> root,T next) {
-        if(root == null || root.left==null){
+    private boolean isValid(Node<T> root) {
+        if (root == null) {
             return true;
         }
-        boolean leftValid =  isValid(root.left,root.data);
-        if(root.right==null){
-            return leftValid && (
-                    next==null || root.data.compareTo(next)<0
-            );
+        if (root.left == null && root.right == null) {
+            return true;
         }
-        boolean rightValid =  isValid(root.right,next);
-        return leftValid && rightValid;
+        if(root.left!=null && max(root.left).compareTo(root.data)>0){
+            return false;
+        }
+        if(root.right!=null && min(root.right).compareTo(root.data)<0){
+            return false;
+        }
+        return isValid(root.left) && isValid(root.right);
     }
 
     public boolean contains(T value) {
@@ -70,10 +72,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements Iterable<T> {
             return true;
         }
         if (root.data.compareTo(value) < 0) {
-            return contains(root.left,value);
+            return contains(root.right,value);
         }
         else if (root.data.compareTo(value) > 0) {
-            return contains(root.right,value);
+            return contains(root.left,value);
         }
         return false;
     }
