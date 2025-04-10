@@ -111,35 +111,79 @@ public class BinarySearchTree<T extends Comparable<T>> implements Iterable<T> {
 
     }
     private Node<T> remove(Node<T> root, T value) {
-        if (root != null) {
-            if (root.data.equals(value)) {
-                if(root.left==null){
-                    return root.right;
-                } else if (root.right==null) {
-                    return root.left;
-                }else{
-                    root.data = min(root.right);
-                    root.right = remove(root.right,root.data);
-                }
-            } else if (root.data.compareTo(value) < 0) {
-                root.left = remove(root.left,value);
+        if(root == null){
+            return null;
+        }
+        if(value.compareTo(root.data) < 0){
+            root.left = remove(root.left,value);
+        }else if(value.compareTo(root.data) > 0){
+            root.right = remove(root.right,value);
+        }else{
+            if(root.left == null && root.right == null){
+                return null;
+            }else if(root.left == null){
+                return root.right;
+            }else if (root.right == null){
+                return root.left;
             }else{
-                root.right = remove(root.right,value);
+                root.data = min(root.right);
+                root.right = remove(root.right,root.data);
             }
         }
         return root;
     }
 
     public int distance(T left, T right) {
-        return 0;
+       return distance(root, left, right);
+    }
+
+    public int distance(Node<T> root, T left, T right) {
+        if(root == null){
+            return 0;
+        }
+        if(root.data.compareTo(left) > 0 && root.data.compareTo(right) > 0){
+            return distance(root.left,left,right);
+        }else if(root.data.compareTo(left) < 0 && root.data.compareTo(right) < 0){
+            return distance(root.right,left,right);
+        }else{
+            int l = find(root, left);
+            int r = find(root, right);
+            return l + r;
+        }
+    }
+
+    public int find(Node<T> root, T value) {
+        if(root == null || root.data.equals(value)){
+            return 0;
+        }
+        if(value.compareTo(root.data) < 0){
+            return 1 + find(root.left,value);
+        }else {
+            return 1 + find(root.right,value);
+        }
+    }
+
+    public int height(Node<T> root){
+        if(root == null){
+            return 0;
+        }
+        int leftHeight = height(root.left);
+        int rightHeight = height(root.right);
+        root.balanceFactor = leftHeight - rightHeight;
+        return 1+Math.max(leftHeight, rightHeight);
     }
 
     public int rootBalanceFactor(){
-        return 0;
+        root.balanceFactor =  height(root.left) - height(root.right);
+        return root.balanceFactor;
     }
 
-    public void calculateAllBalanceFactors(){
+    public void calculateBalanceFactor(Node<T> root){
+       root.balanceFactor =  height(root.left) - height(root.right);
+       calculateBalanceFactor(root.left);
+       calculateBalanceFactor(root.right);
     }
+
 
 
     @Override
